@@ -18,5 +18,18 @@
         tools:layout_editor_absoluteX="312dp"
         tools:layout_editor_absoluteY="37dp" />
 
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="-4dp"
+        tools:context=".MainActivity">
+
+    </ListView>
 
 </RelativeLayout>
