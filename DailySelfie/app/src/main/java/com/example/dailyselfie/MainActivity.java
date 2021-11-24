@@ -1,5 +1,6 @@
 package com.example.dailyselfie;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -31,6 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +41,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-
+    int REQUEST_IMAGE_CAPTURE = 1;
+    int REQUEST_CODE_PERMISSION_ALL = 101;
+    String[] PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+    };
     //Lớp Images tự định nghĩa
     class Images {
         private final Uri uri;
@@ -55,14 +63,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         displayImgList();
         //Thêm nút Camera và sự kiện cho nút Camera
         camera = (ImageButton) findViewById(R.id.camera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        PERMISSIONS, REQUEST_CODE_PERMISSION_ALL);
             }});
+
+    }
+    private  void Camera_action(){
 
     }
     private void displayImgList(){
@@ -86,44 +99,59 @@ public class MainActivity extends AppCompatActivity {
         imageListview.setAdapter(imgAdapter);
     }
     //Hàm cho phép dùng Camera và thêm hình vào DCIM sau khi chụp và chấp nhận hình bằng fileprovider
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider"
-                ,photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                displayImgList();
-            }
+    private void saveImage(Bitmap finalBitmap) {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/DCIM/Camera");
+        //myDir.mkdirs();
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fname = "IMG_"+ timeStamp +".jpg";
+
+        File file = new File(myDir, fname);
+        if (file.exists()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-    //Hàm tạo đường dẫn cho file hình được gọi lại ở dispatchTakePictureIntent()
-    String currentPhotoPath;
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStorageDirectory().toString()+"/DCIM/Camera");
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null){
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            //imghinh.setImageBitmap(bitmap);
+            //saveTempBitmap(bitmap);
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "yourTitle" , "yourDescription");
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+        displayImgList();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == REQUEST_CODE_PERMISSION_ALL && grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent,REQUEST_IMAGE_CAPTURE);
+        }else{
+            Toast.makeText(this, "Bạn không cho phép đủ quyền cho ứng dụng!", Toast.LENGTH_SHORT).show();
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //Hàm lấy tất cả hình trong /DCIM hoặc /Picture
