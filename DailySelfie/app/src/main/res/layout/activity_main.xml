@@ -27,4 +27,10 @@
         android:layout_marginStart="-2dp"
         android:layout_marginTop="82dp"
         android:layout_marginBottom="3dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:icon="@android:drawable/ic_lock_idle_alarm" />
 </RelativeLayout>

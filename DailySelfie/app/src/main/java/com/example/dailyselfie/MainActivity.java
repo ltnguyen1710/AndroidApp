@@ -9,7 +9,12 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
@@ -29,18 +34,34 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.dailyselfie.databinding.ActivityMainBinding;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+    private Button button;
+    private Button selectTime;
+    private Button setAlarm;
+    private MaterialTimePicker picker;
+    private Calendar calendar;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    int hour, minute;
+
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_CODE_PERMISSION_ALL = 101;
     String[] PERMISSIONS = {
@@ -48,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
+
+
+
     //Lớp Images tự định nghĩa
     class Images {
         private final Uri uri;
@@ -73,11 +97,88 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         PERMISSIONS, REQUEST_CODE_PERMISSION_ALL);
             }});
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alarm();
+            }
+        });
+
+
+
 
     }
-    private  void Camera_action(){
-
+    private void alarm(){
+        createNotificationChannel();
+        setContentView(R.layout.alarm);
+        selectTime = (Button) findViewById(R.id.selectTimeBtn);
+        selectTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    showPicker(v);
+            }
+        });
+        setAlarm = (Button) findViewById(R.id.setAlarmBtn);
+        setAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    setAlarm();
+                
+            }
+        });
     }
+
+    private void setAlarm() {
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY,pendingIntent);
+            Toast.makeText(this,"Alarm set Successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showPicker(View view) {
+        picker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(12)
+                .setMinute(0)
+                .setTitleText("Select Alarm Time")
+                .build();
+        picker.show(getSupportFragmentManager(), "foxandroid");
+        picker.addOnPositiveButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY,picker.getHour());
+                calendar.set(Calendar.MINUTE,picker.getMinute());
+                calendar.set(Calendar.SECOND,0);
+                calendar.set(Calendar.MILLISECOND,0);
+
+                int gio = picker.getHour();
+                int phut = picker.getMinute();
+                int string_gio = Integer.valueOf(gio);
+                int string_phut = Integer.valueOf(phut);
+
+            }
+        });
+    }
+
+    private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "foxandroidReminderChannel";
+            String descripttion = "Channel for alarm Manager";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("foxandroid", name, importance);
+            channel.setDescription(descripttion);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+    }
+
     private void displayImgList(){
         // Kiểm tra quyền và thông báo
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {

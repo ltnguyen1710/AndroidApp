@@ -29,6 +29,8 @@ package="com.example.dailyselfie">
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/file_paths"></meta-data>
     </provider>
+
+    <receiver android:name=".AlarmReceiver" />
 </application>
 
 <uses-feature
