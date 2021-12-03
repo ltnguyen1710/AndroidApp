@@ -57,12 +57,9 @@ import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
-<<<<<<< Updated upstream
+
     private ImageButton button;
-=======
-    private Button button;
     private Button buttonMinute;
->>>>>>> Stashed changes
     private Button selectTime;
     private Button buttonsetMinute;
     private EditText editTime;
@@ -284,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void displayImgList(){
+        private void displayImgList(){
         // Kiểm tra quyền và thông báo
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
             getAllImage();
@@ -303,6 +300,21 @@ public class MainActivity extends AppCompatActivity {
         ListView imageListview = findViewById(R.id.listView);
         //Thêm Adapter cho ListView
         imageListview.setAdapter(imgAdapter);
+        imageListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ImagesView currentNumberPosition = imgAdapter.getItem(position);
+                sendImage(currentNumberPosition.getUri());
+
+            }
+        });
+    }
+    public static final String MESSAGE = "com.example.dailyselfie.MESSAGE";
+    public void sendImage(Uri uri){
+        Intent intent = new Intent(this, secondactivity.class);
+        intent.putExtra(MESSAGE,uri.toString());
+        startActivity(intent);
+
     }
 
     //Hàm cho phép dùng Camera và thêm hình vào DCIM sau khi chụp và chấp nhận hình bằng fileprovider
