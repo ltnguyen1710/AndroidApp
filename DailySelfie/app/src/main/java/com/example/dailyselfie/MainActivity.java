@@ -53,7 +53,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    private Button button;
+    private ImageButton button;
     private Button selectTime;
     private Button setAlarm;
     private MaterialTimePicker picker;
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         PERMISSIONS, REQUEST_CODE_PERMISSION_ALL);
             }});
-        button = (Button) findViewById(R.id.button);
+        button = (ImageButton) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

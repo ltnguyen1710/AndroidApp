@@ -10,7 +10,7 @@
         android:id="@+id/imageView3"
         android:layout_width="139dp"
         android:layout_height="119dp"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/ic_launcher_foreground" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
