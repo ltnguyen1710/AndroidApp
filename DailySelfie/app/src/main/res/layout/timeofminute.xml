@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="150dp"
+        android:text="Every" />
+
+    <EditText
+        android:id="@+id/editTextTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="150dp"
+        android:background="#F1FDDC"
+        android:ems="8"
+        android:hint="Enter in number"
+        android:inputType="number|time"
+        android:digits="1234567890"
+        android:minHeight="48dp" />
+
+
+    <Button
+        android:id="@+id/setAlarm2Btn"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="300dp"
+        android:text="Confirm"
+        android:textSize="26dp"
+        android:translationX="-200dp" />
+
+    <Spinner
+        android:id="@+id/spinnerOption"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:translationX="-190dp"
+        android:translationY="150dp" />
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="viewtesttttttt" />
+
+</LinearLayout>

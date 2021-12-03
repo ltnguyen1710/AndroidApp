@@ -1,11 +1,11 @@
 package com.example.dailyselfie;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+
 
 import android.Manifest;
 import android.app.Activity;
@@ -14,8 +14,6 @@ import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,44 +21,59 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.icu.text.Transliterator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.View;
+
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
 import android.widget.ListView;
-import android.widget.TimePicker;
+import android.widget.Spinner;
+
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dailyselfie.databinding.ActivityMainBinding;
+
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends AppCompatActivity {
+<<<<<<< Updated upstream
     private ImageButton button;
+=======
+    private Button button;
+    private Button buttonMinute;
+>>>>>>> Stashed changes
     private Button selectTime;
-    private Button setAlarm;
+    private Button buttonsetMinute;
+    private EditText editTime;
+    private TextView test;
+     Spinner spinner;
     private MaterialTimePicker picker;
     private Calendar calendar;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
-    int hour, minute;
+    String choose_type_time;
+
 
     int REQUEST_IMAGE_CAPTURE = 1;
     int REQUEST_CODE_PERMISSION_ALL = 101;
@@ -106,12 +119,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
+
+
+
     private void alarm(){
         createNotificationChannel();
         setContentView(R.layout.alarm);
+
         selectTime = (Button) findViewById(R.id.selectTimeBtn);
         selectTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,17 +134,110 @@ public class MainActivity extends AppCompatActivity {
                     showPicker(v);
             }
         });
-        setAlarm = (Button) findViewById(R.id.setAlarmBtn);
-        setAlarm.setOnClickListener(new View.OnClickListener() {
+
+        buttonMinute = (Button) findViewById(R.id.selectTimeofMinuteBtn);
+        buttonMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    setAlarm();
-                
+                AlarmtoMinute();
+            }
+        });
+    }
+    private static SimpleDateFormat DBFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+    private void setAlarm_every(Editable minute,String Timetype) {
+
+
+    if(Timetype.equals("Minutes")) {
+        int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        Date date = null;
+        try {
+            date = sdf.parse(currentDateandTime);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE,TimesetofMinutes);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
+        Toast.makeText(this, "Alarm set Minutes "+TimesetofMinutes+" Successfully", Toast.LENGTH_SHORT).show();
+    }else{
+        int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        Date date = null;
+        try {
+            date = sdf.parse(currentDateandTime);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR,TimesetofMinutes);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
+        Toast.makeText(this, "Alarm set Hours" + TimesetofMinutes*60 + " Successfully", Toast.LENGTH_SHORT).show();
+
+    }
+
+    }
+    private void AlarmtoMinute() {
+        createNotificationChannel();
+        setContentView(R.layout.timeofminute);
+        test = (TextView) findViewById(R.id.test);
+        editTime = (EditText) findViewById(R.id.editTextTime);
+        spinner = (Spinner) findViewById(R.id.spinnerOption);
+        ArrayList<String> arrayTime = new ArrayList<String>();
+        arrayTime.add("Minutes");
+        arrayTime.add("Hour");
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item,arrayTime);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                switch (position) {
+                    case 0:
+                        test.setText(arrayTime.get(0));
+                        Toast.makeText(MainActivity.this , arrayTime.get(position), Toast.LENGTH_SHORT).show();
+                        choose_type_time ="Minutes";
+                        break;
+                    case 1:
+                        test.setText(arrayTime.get(1));
+                        Toast.makeText(MainActivity.this , arrayTime.get(position), Toast.LENGTH_SHORT).show();
+                        choose_type_time ="Hour";
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        buttonsetMinute = (Button) findViewById(R.id.setAlarm2Btn);
+        buttonsetMinute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAlarm_every(editTime.getText(),choose_type_time);
+
             }
         });
     }
 
+
+
     private void setAlarm() {
+
             alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, AlarmReceiver.class);
             pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
@@ -155,11 +263,8 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE,picker.getMinute());
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
+                setAlarm();
 
-                int gio = picker.getHour();
-                int phut = picker.getMinute();
-                int string_gio = Integer.valueOf(gio);
-                int string_phut = Integer.valueOf(phut);
 
             }
         });
@@ -199,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         //Thêm Adapter cho ListView
         imageListview.setAdapter(imgAdapter);
     }
+
     //Hàm cho phép dùng Camera và thêm hình vào DCIM sau khi chụp và chấp nhận hình bằng fileprovider
     private void saveImage(Bitmap finalBitmap) {
 
