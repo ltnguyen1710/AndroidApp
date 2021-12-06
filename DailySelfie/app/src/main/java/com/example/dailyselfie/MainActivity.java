@@ -63,10 +63,13 @@ public class MainActivity extends AppCompatActivity {
     private Button selectTime;
     private Button buttonsetMinute;
     private EditText editTime;
+
     private TextView textTime;
-    private TextView test;
+
     private Button cancelBtn;
+    private Button returnBtn;
     private Button returnBtn2;
+
      Spinner spinner;
     private MaterialTimePicker picker;
     private Calendar calendar;
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         displayImgList();
         //Thêm nút Camera và sự kiện cho nút Camera
         camera = (ImageButton) findViewById(R.id.camera);
@@ -115,12 +119,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alarm();
+
             }
         });
 
 
     }
     private static SimpleDateFormat DBFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
 
     private void setAlarm_every(Editable minute,String Timetype) {
 
@@ -167,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void alarm(){
         createNotificationChannel();
         setContentView(R.layout.alarm);
@@ -177,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     showPicker(v);
+
             }
         });
 
@@ -212,9 +218,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void AlarmtoMinute() {
         createNotificationChannel();
         setContentView(R.layout.timeofminute);
+
         editTime = (EditText) findViewById(R.id.editTextTime);
         spinner = (Spinner) findViewById(R.id.spinnerOption);
         ArrayList<String> arrayTime = new ArrayList<String>();
@@ -248,16 +256,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         buttonsetMinute = (Button) findViewById(R.id.setAlarm2Btn);
+        //Nút confirm
         buttonsetMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 setAlarm_every(editTime.getText(),choose_type_time);
                 alarm();
+
 
                 textTime = (TextView) findViewById(R.id.textViewTime);
                 textTime.setText(calendar.getTime().toString());
             }
         });
+        //Nút return
+        returnBtn = (Button)  findViewById(R.id.returnBtn);
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alarm();
+            }
+        });
+
     }
 
 
@@ -290,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
                 setAlarm();
+
                 textTime = (TextView) findViewById(R.id.textViewTime);
                 textTime.setText(calendar.getTime().toString());
 
