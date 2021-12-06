@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +11,16 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="150dp"
-        android:text="Every" />
+        android:text="Every"
+        android:translationX="50dp" />
+
+    <Button
+        android:id="@+id/returnBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:translationX="240dp"
+        android:translationY="215dp"
+        app:icon="@android:drawable/ic_menu_revert" />
 
     <EditText
         android:id="@+id/editTextTime"
@@ -19,11 +29,12 @@
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="150dp"
         android:background="#F1FDDC"
+        android:digits="1234567890"
         android:ems="8"
         android:hint="Enter in number"
         android:inputType="number|time"
-        android:digits="1234567890"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:translationX="-40dp" />
 
 
     <Button
@@ -33,7 +44,8 @@
         android:layout_marginTop="300dp"
         android:text="Confirm"
         android:textSize="26dp"
-        android:translationX="-200dp" />
+        android:translationX="-250dp"
+        android:translationY="-80dp" />
 
     <Spinner
         android:id="@+id/spinnerOption"
@@ -42,10 +54,6 @@
         android:background="@android:color/transparent"
         android:translationX="-190dp"
         android:translationY="150dp" />
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="viewtesttttttt" />
+
 
 </LinearLayout>

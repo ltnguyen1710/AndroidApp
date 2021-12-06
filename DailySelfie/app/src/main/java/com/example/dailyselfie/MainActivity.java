@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private Button selectTime;
     private Button buttonsetMinute;
     private EditText editTime;
+    private TextView textTime;
     private TextView test;
+    private Button cancelBtn;
+    private Button returnBtn2;
      Spinner spinner;
     private MaterialTimePicker picker;
     private Calendar calendar;
@@ -117,6 +120,51 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private static SimpleDateFormat DBFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+    private void setAlarm_every(Editable minute,String Timetype) {
+
+
+        if(Timetype.equals("Minutes")) {
+            int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            Date date = null;
+            try {
+                date = sdf.parse(currentDateandTime);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MINUTE,TimesetofMinutes);
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
+            Toast.makeText(this, "Alarm set Minutes "+TimesetofMinutes+" Successfully", Toast.LENGTH_SHORT).show();
+        }else{
+            int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
+            String currentDateandTime = sdf.format(new Date());
+            Date date = null;
+            try {
+                date = sdf.parse(currentDateandTime);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR,TimesetofMinutes);
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
+            Toast.makeText(this, "Alarm set Hours" + TimesetofMinutes*60 + " Successfully", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
 
 
 
@@ -139,56 +187,34 @@ public class MainActivity extends AppCompatActivity {
                 AlarmtoMinute();
             }
         });
-    }
-    private static SimpleDateFormat DBFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        //Nút cancel
+        cancelBtn = (Button) findViewById(R.id.buttonCancel);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alarmManager.cancel(pendingIntent);
 
-    private void setAlarm_every(Editable minute,String Timetype) {
+                textTime = (TextView) findViewById(R.id.textViewTime);
+                textTime.setText("Canceled");
 
 
-    if(Timetype.equals("Minutes")) {
-        int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
-        String currentDateandTime = sdf.format(new Date());
-        Date date = null;
-        try {
-            date = sdf.parse(currentDateandTime);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE,TimesetofMinutes);
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
-        Toast.makeText(this, "Alarm set Minutes "+TimesetofMinutes+" Successfully", Toast.LENGTH_SHORT).show();
-    }else{
-        int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
-        String currentDateandTime = sdf.format(new Date());
-        Date date = null;
-        try {
-            date = sdf.parse(currentDateandTime);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.HOUR,TimesetofMinutes);
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000 * 60, pendingIntent);
-        Toast.makeText(this, "Alarm set Hours" + TimesetofMinutes*60 + " Successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+        returnBtn2 = (Button) findViewById(R.id.buttonReturn2);
+        returnBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                startActivity(intent);
 
+
+            }
+        });
     }
 
-    }
     private void AlarmtoMinute() {
         createNotificationChannel();
         setContentView(R.layout.timeofminute);
-        test = (TextView) findViewById(R.id.test);
         editTime = (EditText) findViewById(R.id.editTextTime);
         spinner = (Spinner) findViewById(R.id.spinnerOption);
         ArrayList<String> arrayTime = new ArrayList<String>();
@@ -205,12 +231,12 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
-                        test.setText(arrayTime.get(0));
+
                         Toast.makeText(MainActivity.this , arrayTime.get(position), Toast.LENGTH_SHORT).show();
                         choose_type_time ="Minutes";
                         break;
                     case 1:
-                        test.setText(arrayTime.get(1));
+
                         Toast.makeText(MainActivity.this , arrayTime.get(position), Toast.LENGTH_SHORT).show();
                         choose_type_time ="Hour";
                         break;
@@ -226,7 +252,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setAlarm_every(editTime.getText(),choose_type_time);
+                alarm();
 
+                textTime = (TextView) findViewById(R.id.textViewTime);
+                textTime.setText(calendar.getTime().toString());
             }
         });
     }
@@ -261,7 +290,8 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
                 setAlarm();
-
+                textTime = (TextView) findViewById(R.id.textViewTime);
+                textTime.setText(calendar.getTime().toString());
 
             }
         });
