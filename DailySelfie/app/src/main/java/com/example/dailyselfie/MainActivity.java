@@ -86,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA
     };
 
-
+    public void setPendingIntent(PendingIntent pendingIntent){
+        this.pendingIntent=pendingIntent;
+    }
 
     //Lớp Images tự định nghĩa
     class Images {
@@ -119,18 +121,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alarm();
-
             }
         });
 
 
     }
+
     private static SimpleDateFormat DBFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
 
     private void setAlarm_every(Editable minute,String Timetype) {
-
-
         if(Timetype.equals("Minutes")) {
             int TimesetofMinutes =Integer.parseInt(String.valueOf(minute));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm", Locale.getDefault());
@@ -210,10 +210,23 @@ public class MainActivity extends AppCompatActivity {
         returnBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
-
-
+                setContentView(R.layout.activity_main);
+                displayImgList();
+                //Thêm nút Camera và sự kiện cho nút Camera
+                camera = (ImageButton) findViewById(R.id.camera);
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                PERMISSIONS, REQUEST_CODE_PERMISSION_ALL);
+                    }});
+                button = (ImageButton) findViewById(R.id.button);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alarm();
+                    }
+                });
             }
         });
     }
@@ -260,13 +273,15 @@ public class MainActivity extends AppCompatActivity {
         buttonsetMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                setAlarm_every(editTime.getText(),choose_type_time);
-                alarm();
-
-
-                textTime = (TextView) findViewById(R.id.textViewTime);
-                textTime.setText(calendar.getTime().toString());
+                if (editTime.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this , "Please enter your option", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    setAlarm_every(editTime.getText(),choose_type_time);
+                    alarm();
+                    textTime = (TextView) findViewById(R.id.textViewTime);
+                    textTime.setText(calendar.getTime().toString());
+                }
             }
         });
         //Nút return
