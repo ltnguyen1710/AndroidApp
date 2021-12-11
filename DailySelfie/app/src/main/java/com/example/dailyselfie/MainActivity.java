@@ -193,16 +193,21 @@ public class MainActivity extends AppCompatActivity {
                 AlarmtoMinute();
             }
         });
+
         //Nút cancel
         cancelBtn = (Button) findViewById(R.id.buttonCancel);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alarmManager.cancel(pendingIntent);
-
                 textTime = (TextView) findViewById(R.id.textViewTime);
-                textTime.setText("Canceled");
 
+                if(!textTime.getText().toString().equals("") ) {
+                    alarmManager.cancel(pendingIntent);
+                    textTime.setText("Canceled");
+
+                }else{
+                    Toast.makeText(v.getContext(), "Can't cancel", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -289,7 +294,9 @@ public class MainActivity extends AppCompatActivity {
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 alarm();
+
             }
         });
 
