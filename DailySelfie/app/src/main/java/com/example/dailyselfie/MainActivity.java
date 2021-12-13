@@ -177,15 +177,6 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
         setContentView(R.layout.alarm);
 
-        selectTime = (Button) findViewById(R.id.selectTimeBtn);
-        selectTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    showPicker(v);
-
-            }
-        });
-
         buttonMinute = (Button) findViewById(R.id.selectTimeofMinuteBtn);
         buttonMinute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 textTime = (TextView) findViewById(R.id.textViewTime);
 
-                if(!textTime.getText().toString().equals("") ) {
+                if(pendingIntent!= null ) {
                     alarmManager.cancel(pendingIntent);
                     textTime.setText("Canceled");
 
@@ -302,44 +293,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-    private void setAlarm() {
-
-            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, AlarmReceiver.class);
-            pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY,pendingIntent);
-            Toast.makeText(this,"Alarm set Successfully", Toast.LENGTH_SHORT).show();
-    }
-
-    private void showPicker(View view) {
-        picker = new MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_12H)
-                .setHour(12)
-                .setMinute(0)
-                .setTitleText("Select Alarm Time")
-                .build();
-        picker.show(getSupportFragmentManager(), "foxandroid");
-        picker.addOnPositiveButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,picker.getHour());
-                calendar.set(Calendar.MINUTE,picker.getMinute());
-                calendar.set(Calendar.SECOND,0);
-                calendar.set(Calendar.MILLISECOND,0);
-                setAlarm();
-
-                textTime = (TextView) findViewById(R.id.textViewTime);
-                textTime.setText(calendar.getTime().toString());
-
-            }
-        });
-    }
-
     private void createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             CharSequence name = "foxandroidReminderChannel";
@@ -347,14 +300,12 @@ public class MainActivity extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel("foxandroid", name, importance);
             channel.setDescription(descripttion);
-
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-
         }
     }
 
-        private void displayImgList(){
+    private void displayImgList(){
         // Kiểm tra quyền và thông báo
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
             getAllImage();

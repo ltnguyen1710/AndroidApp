@@ -8,52 +8,60 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical">
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/red"
             android:layout_width="match_parent"
             android:background="@color/red"
-            android:layout_height="83dp"></TextView>
+            android:layout_height="0dp"></TextView>
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/blue"
             android:layout_width="match_parent"
             android:background="@color/blue"
-            android:layout_height="140dp"></TextView>
+            android:layout_height="0dp"></TextView>
 
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="385dp"
         android:orientation="horizontal">
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/green"
-            android:layout_width="121dp"
+            android:layout_width="0dp"
             android:background="@color/green"
             android:layout_height="match_parent"></TextView>
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/purple"
-            android:layout_width="123dp"
+            android:layout_width="0dp"
             android:background="@color/purple"
-            android:layout_height="228dp"></TextView>
+            android:layout_height="match_parent"></TextView>
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/yellow"
-            android:layout_width="163dp"
+            android:layout_width="0dp"
             android:background="@color/yellow"
             android:layout_height="match_parent"></TextView>
     </LinearLayout>
 
     <SeekBar
+        android:layout_weight="1"
         android:id="@+id/see1"
         android:layout_width="match_parent"
-        android:layout_height="94dp"
+        android:layout_height="0dp"
         android:progress="3"></SeekBar>
 
 </LinearLayout>
