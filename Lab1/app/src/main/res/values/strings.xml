@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Modern UI</string>
     <string name="tool_bar">More information</string>
-    <string name="ok">Visit the website</string>
+    <string name="ok">Visit now</string>
     <string name="cancel">cancel</string>
     <string name="Title">Thong bao</string>
 </resources>

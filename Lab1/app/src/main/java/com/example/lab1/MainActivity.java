@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 int[] redArray = {255, 0, 0};
                 int[] blueArray = {0, 0, 255};
                 int[] yellowArray = {255, 255, 0};
+                int[] greenArray ={0, 153, 51};
+                int[] purpleArray = {204, 0, 204};
 
                 progChange = progress;
 
@@ -65,14 +67,20 @@ public class MainActivity extends AppCompatActivity {
                 yellowArray[0] = yellowArray[0] - (125/100)*progChange;
                 yellowArray[1] = yellowArray[1] - (255/100)*progChange;
                 yellowArray[2] = yellowArray[2] + (130/100)*progChange;
+                greenArray[0] = greenArray[0] - (255/100)*progChange;
+                greenArray[1] = greenArray[1] - (145/100)*progChange;
+                greenArray[2] = greenArray[2] - (255/100)*progChange;
+                purpleArray[0] = purpleArray[0] - (255/100)*progChange;
+                purpleArray[1] = purpleArray[1] - (14/100)*progChange;
+                purpleArray[2] = purpleArray[2] - (211/100)*progChange;
 
                 //Set the boxes to new colors
 
                 red.setBackgroundColor(Color.rgb(redArray[0],redArray[1],redArray[2]));
                 blue.setBackgroundColor(Color.rgb(blueArray[0],blueArray[1],blueArray[2]));
-                green.setBackgroundColor(Color.rgb(blueArray[0],blueArray[1],blueArray[2]));
+                green.setBackgroundColor(Color.rgb(greenArray[0],greenArray[1],greenArray[2]));
                 yellow.setBackgroundColor(Color.rgb(yellowArray[0],yellowArray[1],yellowArray[2]));
-                purple.setBackgroundColor(Color.rgb(yellowArray[0],yellowArray[1],yellowArray[2]));
+                purple.setBackgroundColor(Color.rgb(purpleArray[0],purpleArray[1],purpleArray[2]));
 
             }
 
@@ -99,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if(id == R.id.s1){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Thong bao");
-            builder.setMessage("Click below");
+            builder.setTitle("Notification");
+            builder.setMessage("Click visit youtube");
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent Web = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
