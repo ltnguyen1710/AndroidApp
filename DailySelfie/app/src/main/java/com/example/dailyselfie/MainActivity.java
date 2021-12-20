@@ -379,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
             //imghinh.setImageBitmap(bitmap);
             //saveTempBitmap(bitmap);
             MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "yourTitle" , "yourDescription");
+            //saveImage(bitmap);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -436,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
                 // Stores column values and the contentUri in a local object
                 // that represents the media file.
                 imgList.add(new Images(contentUri, name));
+                //System.out.println(contentUri);
             }
         }
         return imgList;
