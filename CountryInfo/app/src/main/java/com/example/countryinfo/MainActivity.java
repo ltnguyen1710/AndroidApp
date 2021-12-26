@@ -1,13 +1,20 @@
 package com.example.countryinfo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -25,24 +32,44 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements  RetainedFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity {
 
     private ListView lv;
+    CountryAdapter Adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = findViewById(R.id.listview);
         new HttpGetTask().execute();
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Country c = Adapter.getItem(position);
+                sendcovidInfo(c.getTennuoc(),c.getHinhquockiURL());
+            }
+        });
+
+
     }
-
-    private void getCountryList(){
-
+    private void sendcovidInfo(String name,String URL){
+        Intent intent = new Intent(this, secondactivity.class);
+        Bundle thongtin = new Bundle();
+        thongtin.putString("Key_1",name);
+        thongtin.putString("Key_2",URL);
+        intent.putExtras(thongtin);
+        startActivity(intent);
     }
 
     @Override
-    public void onDownloadfinished(String result) {
+    public void finish() {
+        super.finish();
+    }
 
+    @Override
+    protected void onStop() {
+        //Adapter.imageLoader.clearCache();
+        super.onStop();
     }
 
     class HttpGetTask extends AsyncTask<Void, Void, List<Country>> {
@@ -89,8 +116,20 @@ public class MainActivity extends AppCompatActivity implements  RetainedFragment
         @Override
         protected void onPostExecute(List<Country> result) {
             //mTextView.setText(result);
-            CountryAdapter Adapter = new CountryAdapter(MainActivity.this,(ArrayList<Country>) result);
-            lv.setAdapter(Adapter);
+            if(ActivityCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Adapter = new CountryAdapter(MainActivity.this, (ArrayList<Country>) result);
+                lv.setAdapter(Adapter);
+            }
+            else{
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        100);
+                Adapter = new CountryAdapter(MainActivity.this, (ArrayList<Country>) result);
+                lv.setAdapter(Adapter);
+
+            }
         }
 
         private String readStream(InputStream in) {

@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/CountryInfo/app/src/main/res/drawable/stub.xml" value="0.2824074074074074" />
+        <entry key="..\:/Android/CountryInfo/app/src/main/res/layout/activity_main.xml" value="0.15081521739130435" />
+        <entry key="..\:/Android/CountryInfo/app/src/main/res/layout/itemoflistview.xml" value="0.20520833333333333" />
+        <entry key="..\:/Android/CountryInfo/app/src/main/res/layout/secondactivity.xml" value="0.26358695652173914" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/CountryInfo/app/src/main/res/layout/activity_main.xml" value="0.2898550724637681" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/CountryInfo/app/src/main/res/layout/itemoflistview.xml" value="0.2898550724637681" />
       </map>

@@ -341,45 +341,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //Hàm cho phép dùng Camera và thêm hình vào DCIM sau khi chụp và chấp nhận hình bằng fileprovider
-    private void saveImage(Bitmap finalBitmap) {
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/DCIM/Camera");
-        //myDir.mkdirs();
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fname = "IMG_"+ timeStamp +".jpg";
-
-        File file = new File(myDir, fname);
-        if (file.exists()) file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
 
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null){
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            //imghinh.setImageBitmap(bitmap);
-            //saveTempBitmap(bitmap);
-            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "yourTitle" , "yourDescription");
-            //saveImage(bitmap);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String fname = "IMG_"+ timeStamp +".jpg";
+            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, fname , fname);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -408,14 +377,14 @@ public class MainActivity extends AppCompatActivity {
         //Chọn nhũng cột cần lấy -- tương tự Select collumn trong SQL
         String[] projection = new String[]{
                 MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.TITLE,
         };
         //Truy vấn -- tương tự Where trong SQL
-        String selection = MediaStore.Images.Media.DISPLAY_NAME +">=?";
+        String selection = MediaStore.Images.Media.TITLE +">=?";
         //Cái này có thể để rỗng
         String[] selectionArgs = {""};
         //Lấy ra theo thứ tự như thế nào
-        String sortOrder = MediaStore.Images.Media.DISPLAY_NAME + " DESC";
+        String sortOrder = MediaStore.Images.Media.TITLE + " DESC";
         //Thực hiện truy vấn
         try (Cursor cursor = getApplicationContext().getContentResolver().query(
                 collection,
@@ -427,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             // Cache column indices.
             int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
             int nameColumn =
-                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
             while (cursor.moveToNext()) {
                 // Get values of columns for a given Image.
                 long id = cursor.getLong(idColumn);
